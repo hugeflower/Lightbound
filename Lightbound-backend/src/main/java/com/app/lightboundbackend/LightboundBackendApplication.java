@@ -1,4 +1,4 @@
-package com.example.lightboundbackend;
+package com.app.lightboundbackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
