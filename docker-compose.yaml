@@ -1,0 +1,42 @@
+
+name: lightbound
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: lightbound-dev
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - lightbound-network
+
+  backend:
+    build:
+      context: ./Lightbound-backend
+    ports:
+      - 8181:8181
+    networks:
+      - lightbound-network
+    depends_on:
+    - postgres
+
+  frontend:
+    build:
+      context: ./Lightbound-frontend
+    ports:
+      - 3000:3000
+    networks:
+      - lightbound-network
+    depends_on:
+      - backend
+
+networks:
+  lightbound-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
