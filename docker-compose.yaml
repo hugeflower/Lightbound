@@ -1,5 +1,5 @@
-
 name: lightbound
+
 services:
   postgres:
     image: postgres:latest
