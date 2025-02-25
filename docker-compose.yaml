@@ -1,4 +1,4 @@
-name: lightbound
+version: '3.8'
 
 services:
   postgres:
