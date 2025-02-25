@@ -1,7 +1,6 @@
 package com.app.lightboundbackend.api;
 
 import com.app.lightboundbackend.application.UserService;
-import com.app.lightboundbackend.domain.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
