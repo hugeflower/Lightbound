@@ -1,6 +1,7 @@
 package com.app.lightboundbackend.api;
 
 import com.app.lightboundbackend.api.login.JwtTokenFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,12 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig{
+
+    private final String allowedOrigins;
+
+    public SecurityConfig(@Value("${FRONTEND_CORS_ORIGIN:http://localhost:5174}") String allowedOrigins) {
+        this.allowedOrigins = allowedOrigins;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenFilter jwtTokenFilter) throws Exception {
@@ -56,7 +63,7 @@ public class SecurityConfig{
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5174"));
+        configuration.setAllowedOrigins(List.of(allowedOrigins));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
         configuration.addAllowedHeader("content-type");
         configuration.setAllowCredentials(true);
