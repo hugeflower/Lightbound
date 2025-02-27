@@ -4,6 +4,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository {
-    User findByUsername(String username);
-    User save(User user);
+    LightBoundUser findByUsername(String username);
+    LightBoundUser save(LightBoundUser lightBoundUser);
 }

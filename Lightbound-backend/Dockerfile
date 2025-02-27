@@ -68,8 +68,8 @@ RUN java -Djarmode=layertools -jar target/app.jar extract --destination target/e
 # eclipse-temurin@sha256:99cede493dfd88720b610eb8077c8688d3cca50003d76d1d539b0efc8cca72b4.
 FROM eclipse-temurin:21-jre-jammy AS final
 
-# Create a non-privileged user that the app will run under.
-# See https://docs.docker.com/go/dockerfile-user-best-practices/
+# Create a non-privileged lightBoundUser that the app will run under.
+# See https://docs.docker.com/go/dockerfile-lightBoundUser-best-practices/
 ARG UID=10001
 RUN adduser \
     --disabled-password \

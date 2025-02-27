@@ -6,12 +6,23 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class User {
+public class LightBoundUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
     private String password;
+    private UserRoles userRoles;
+
+    public LightBoundUser(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.userRoles = UserRoles.USER;
+    }
+
+    public LightBoundUser() {
+
+    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -19,5 +30,17 @@ public class User {
 
     public void setPassword(String encodedPassword) {
         this.password = encodedPassword;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public UserRoles getUserRoles() {
+        return userRoles;
     }
 }

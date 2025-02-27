@@ -1,4 +1,6 @@
 package com.app.lightboundbackend.domain;
 
-public record Message(String message) {
+public enum UserRoles {
+    ADMIN,
+    USER,
 }

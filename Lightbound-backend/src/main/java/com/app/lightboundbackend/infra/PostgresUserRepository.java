@@ -1,6 +1,6 @@
 package com.app.lightboundbackend.infra;
 
-import com.app.lightboundbackend.domain.User;
+import com.app.lightboundbackend.domain.LightBoundUser;
 import com.app.lightboundbackend.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,12 +15,12 @@ public class PostgresUserRepository implements UserRepository {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public LightBoundUser findByUsername(String username) {
         return client.findByUsername(username);
     }
 
     @Override
-    public User save(User user) {
-        return client.save(user);
+    public LightBoundUser save(LightBoundUser lightBoundUser) {
+        return client.save(lightBoundUser);
     }
 }
