@@ -35,9 +35,11 @@ public class AuthResource {
 
     private final long expirationTime = 15 * 60 * 1000; // 1 minute
     private final String secretKey;
+    private final String allowedDomain;
 
-    public AuthResource(@Value("${jwt.secret-key}") String secretKey) {
+    public AuthResource(@Value("${jwt.secret-key}") String secretKey, @Value("${ALLOWED_DOMAIN}") String allowedDomain) {
         this.secretKey = secretKey;
+        this.allowedDomain = allowedDomain;
     }
 
     @PostMapping(value = "/register")
@@ -93,6 +95,7 @@ public class AuthResource {
         jwtCookie.setHttpOnly(true);
         jwtCookie.setSecure(true);
         jwtCookie.setPath("/");
+        jwtCookie.setDomain(allowedDomain);
         jwtCookie.setMaxAge((int) (expirationTime/1000));
         return jwtCookie;
     }
