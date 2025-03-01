@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -54,7 +55,7 @@ public class AuthResource {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -63,9 +64,8 @@ public class AuthResource {
                 )
             );
             String token = createJWT(authentication);
-            Cookie jwtCookie = createCookie(token);
-            response.addCookie(jwtCookie);
-            return ResponseEntity.ok(token);
+            ResponseCookie jwtCookie = createCookie(token);
+            return ResponseEntity.ok().header("Set-Cookie", jwtCookie.toString()).body(token);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Erreur de login. " + e.getMessage());
         }
@@ -90,14 +90,15 @@ public class AuthResource {
         return ResponseEntity.ok("Successfully logged out!");
     }
 
-    private Cookie createCookie(String token) {
-        Cookie jwtCookie = new Cookie("jwt", token);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setDomain(allowedDomain);
-        jwtCookie.setMaxAge((int) (expirationTime/1000));
-        return jwtCookie;
+    private ResponseCookie createCookie(String token) {
+        return ResponseCookie.from("jwt", token)
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .sameSite("None")
+            .domain(allowedDomain)
+            .maxAge((int) (expirationTime/1000))
+            .build();
     }
 
     private String createJWT(Authentication authentication) {
