@@ -14,7 +14,10 @@ function useGetProfile() {
         try {
             const response = await fetch(`${host}/${secret}/${user}`, {
                 method: 'GET',
-                credentials: "include"
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                }
             })
             const result = await response.text()
             if (!response.ok) {

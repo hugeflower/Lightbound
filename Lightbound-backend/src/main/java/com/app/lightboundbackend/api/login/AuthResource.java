@@ -37,7 +37,7 @@ public class AuthResource {
     private final String secretKey;
     private final String allowedDomain;
 
-    public AuthResource(@Value("${jwt.secret-key}") String secretKey, @Value("${ALLOWED_DOMAIN}") String allowedDomain) {
+    public AuthResource(@Value("${jwt.secret-key}") String secretKey, @Value("${ALLOWED_DOMAIN:}") String allowedDomain) {
         this.secretKey = secretKey;
         this.allowedDomain = allowedDomain;
     }
@@ -93,6 +93,7 @@ public class AuthResource {
     private Cookie createCookie(String token) {
         Cookie jwtCookie = new Cookie("jwt", token);
         jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(true);
         jwtCookie.setPath("/");
         jwtCookie.setDomain(allowedDomain);
         jwtCookie.setMaxAge((int) (expirationTime/1000));
