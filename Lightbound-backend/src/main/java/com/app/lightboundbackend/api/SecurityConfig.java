@@ -44,7 +44,7 @@ public class SecurityConfig{
                 .httpBasic(httpBasic -> {})
             .logout(logout -> logout
                 .clearAuthentication(true)
-                .deleteCookies("JSESSIONID", "jwtToken")
+                .deleteCookies("JSESSIONID", "jwt")
                 .invalidateHttpSession(true)
                 .permitAll());
         return http.build();

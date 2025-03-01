@@ -18,14 +18,15 @@ function useLoginUser() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({username: username, password: password}),
+                credentials: "include"
             })
             const result = await response.text()
             if (!response.ok) {
                 throw new Error(result)
             }
 
-            localStorage.setItem("cookie", result);
-            setSuccess("Connexion réussie, le cooke est dans le local storage");
+            localStorage.setItem("jwt", result);
+            setSuccess("Connexion réussie, le cookie a été reçu et le jwt a été mis dans le localStorage");
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Erreur inconnue";
             setError(errorMessage)

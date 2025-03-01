@@ -48,10 +48,10 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public void registerUser(String username, String password) throws Exception {
+    public void registerUser(String username, String password, boolean admin) throws Exception {
         LightBoundUser lightBoundUser;
         validateNewUser(username, password);
-        lightBoundUser = new LightBoundUser(username, passwordEncoder.encode(password));
+        lightBoundUser = new LightBoundUser(username, passwordEncoder.encode(password), admin);
         userRepository.save(lightBoundUser);
     }
 
@@ -62,5 +62,6 @@ public class UserService implements UserDetailsService {
         Matcher matcher = Pattern.compile(REGEX_PASSWORD).matcher(password);
         if (!matcher.matches()) throw new Exception(
             "Mot de passe invalide, vous devez respecter ces règles : une minuscule, une majuscule, un caractère spécial et minimum 12 caractères en tout.");
+        if (password.contains(username)) throw new Exception("Votre mot de passe ne peut pas contenir votre nom d'utilisateur");
     }
 }

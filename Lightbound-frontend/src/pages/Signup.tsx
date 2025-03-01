@@ -1,17 +1,23 @@
 import {useRegisterUser} from "../hooks/UseRegisterUser.ts";
 import {useState} from "react";
+import {useNavigate} from "react-router";
+import {routes} from "../router/routes.ts";
 
 function Signup() {
     const {error, success, postRegisterUser} = useRegisterUser();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [admin, setAdmin] = useState<boolean>(false);
+    const navigate = useNavigate();
 
-    const handleRegisterUser = () => {
-        postRegisterUser(username, password);
+    const handleRegisterUser = (e: React.FormEvent) => {
+        e.preventDefault();
+        postRegisterUser(username, password, admin);
+
     }
 
     return (
-        <section className="bg-gray-50 dark:bg-gray-900">
+        <form className="bg-gray-50 dark:bg-gray-900" onSubmit={handleRegisterUser}>
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <div>
                     <div className="">
@@ -38,8 +44,17 @@ function Signup() {
                                    onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
+                        <div className="mt-5">
+                            <span>
+                                Admin
+                            </span>
+                            <input type="checkbox" name="admin"
+                                   checked={admin}
+                                   onChange={(e) => setAdmin(e.target.checked)}
+                            />
+                        </div>
                         <div>
-                            <button onClick={handleRegisterUser}>
+                            <button type="submit">
                                 Create
                             </button>
                         </div>
@@ -51,12 +66,15 @@ function Signup() {
                         {success &&
                             <div className="text-green-600">
                             <p>{success}</p>
+                                <button onClick={() =>navigate(routes.login.path)}>
+                                    Go to Login
+                                </button>
                             </div>
                         }
                     </div>
                 </div>
             </div>
-        </section>
+        </form>
     )
 }
 

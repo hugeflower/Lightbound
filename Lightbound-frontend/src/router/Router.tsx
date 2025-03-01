@@ -23,7 +23,7 @@ function Router() {
                     <Route element={<AdminRoute/>}>
                         <Route path={routes.admin.path} element={<Admin/>} />
                     </Route>
-                    <Route path="*" element={<Navigate to={routes.login.path} replace />} />
+                    <Route path="*" element={<Navigate to={routes.home.path} replace />} />
                 </Routes>
             </Navigation>
         </BrowserRouter>

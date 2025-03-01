@@ -2,6 +2,7 @@ import {Link} from "react-router";
 import {routes} from "../router/routes.ts";
 
 function Home() {
+
     return (
         <section className="bg-gray-50 dark:bg-gray-900">
             <h1>Home</h1>

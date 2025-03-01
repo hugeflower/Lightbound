@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,20 +32,32 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.replace("Bearer ", "");
+        Cookie[] cookies = request.getCookies();
+        String authToken = null;
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("jwt".equals(cookie.getName())) {
+                    authToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (authToken != null) {
+
             try {
                 Claims claims = Jwts.parser()
                     .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
                     .build()
-                    .parseSignedClaims(token)
+                    .parseSignedClaims(authToken)
                     .getPayload();
 
                 String username = claims.getSubject();
                 List<String> roles = claims.get("roles", List.class);
                 if (username != null) {
-                    Authentication auth = new UsernamePasswordAuthenticationToken(username,
+                    Authentication auth = new UsernamePasswordAuthenticationToken(
+                        username,
                         null,
                         roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
                     );
@@ -53,6 +66,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             } catch (Exception e) {
                 SecurityContextHolder.clearContext();
+                throw new Error("JWT dans les token invalide");
             }
         }
         chain.doFilter(request, response);

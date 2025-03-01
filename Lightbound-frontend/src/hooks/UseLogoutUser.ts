@@ -1,28 +1,28 @@
 import {useState} from "react";
-import {auth, host, register} from "../api/endpoints.ts";
+import {auth, host, logout} from "../api/endpoints.ts";
 
-function useRegisterUser() {
+function useLogoutUser() {
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState("");
 
-    
-    const postRegisterUser = async (username: string, password: string, admin: boolean) => {
+
+    const postLogoutUser = async () => {
         setLoading(true);
         setError("");
         setSuccess("");
         try {
-            const response = await fetch(`${host}/${auth}/${register}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({username: username, password: password, admin: admin}),
+            const response = await fetch(`${host}/${auth}/${logout}`, {
+                method: 'GET',
+                credentials: "include"
             })
             const result = await response.text()
             if (!response.ok) {
                 throw new Error(result)
-            } else setSuccess(result)
+            }
+
+            localStorage.clear();
+            setSuccess("Déonnexion réussie, un nouveau cookie vide a été reçu et le localStorage a été vidé");
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Erreur inconnue";
             setError(errorMessage)
@@ -30,7 +30,7 @@ function useRegisterUser() {
             setLoading(false)
         }
     }
-    return {success, loading, error, postRegisterUser}
+    return {success, loading, error, postLogoutUser}
 }
 
-export { useRegisterUser };
+export { useLogoutUser };

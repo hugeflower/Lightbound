@@ -1,6 +1,21 @@
+import {useGetProfile} from "../hooks/UseGetProfile.ts";
+import {routes} from "../router/routes.ts";
+import {useNavigate} from "react-router";
+import {useEffect} from "react";
+import {useLogoutUser} from "../hooks/UseLogoutUser.ts";
 
 
 function Profile() {
+    const {error, success, getProfile} = useGetProfile()
+    const {error: errorLogout, success: successLogout, postLogoutUser} = useLogoutUser()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (successLogout) navigate(routes.home.path)
+    }, [successLogout]);
+    useEffect(() => {
+        getProfile();
+    }, []);
 
     return (
         <section className="bg-gray-50 dark:bg-gray-900">
@@ -10,6 +25,27 @@ function Profile() {
                 </h1>
 
             </div>
+            {error &&
+                <div className="text-red-600">
+                    <p>{error}</p>
+                </div>
+            }
+            {errorLogout &&
+                <div className="text-red-600">
+                    <p>{errorLogout}</p>
+                </div>
+            }
+            {success &&
+                <div className="text-green-600">
+                    <p>{success}</p>
+                    <button onClick={() =>navigate(routes.home.path)}>
+                        Go to Home
+                    </button>
+                </div>
+            }
+            <button onClick={postLogoutUser}>
+                Logout
+            </button>
         </section>
     )
 }

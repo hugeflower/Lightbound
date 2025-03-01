@@ -1,19 +1,21 @@
-import {Link} from "react-router";
+import {Link, useNavigate} from "react-router";
 import {routes} from "../router/routes.ts";
 import {useLoginUser} from "../hooks/UseLoginUser.ts";
 import {useState} from "react";
 
 function Login() {
     const {error, success, postLoginUser} = useLoginUser()
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const navigate = useNavigate();
 
-    const handleLoginUser = () => {
+    const handleLoginUser = (e: React.FormEvent) => {
+        e.preventDefault();
         postLoginUser(username, password)
     }
 
     return (
-        <section className="bg-gray-50 dark:bg-gray-900">
+        <form className="bg-gray-50 dark:bg-gray-900" onSubmit={handleLoginUser}>
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <div>
                     <div className="">
@@ -41,7 +43,7 @@ function Login() {
                             />
                         </div>
                         <div>
-                            <button onClick={handleLoginUser}>
+                            <button type="submit">
                                 Sign in
                             </button>
                         </div>
@@ -59,12 +61,15 @@ function Login() {
                         {success &&
                             <div className="text-green-600">
                                 <p>{success}</p>
+                                <button onClick={() =>navigate(routes.home.path)}>
+                                    Go to Home
+                                </button>
                             </div>
                         }
                     </div>
                 </div>
             </div>
-        </section>
+        </form>
     )
 }
 

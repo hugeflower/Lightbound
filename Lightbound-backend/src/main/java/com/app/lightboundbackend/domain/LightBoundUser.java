@@ -14,10 +14,10 @@ public class LightBoundUser {
     private String password;
     private UserRoles userRoles;
 
-    public LightBoundUser(String username, String password) {
+    public LightBoundUser(String username, String password, boolean admin) {
         this.username = username;
         this.password = password;
-        this.userRoles = UserRoles.USER;
+        this.userRoles = admin ? UserRoles.ADMIN : UserRoles.USER;
     }
 
     public LightBoundUser() {

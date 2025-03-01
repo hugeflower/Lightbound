@@ -1,4 +1,4 @@
 package com.app.lightboundbackend.api;
 
-public record RegistrationRequest(String username, String password) {
+public record RegistrationRequest(String username, String password, boolean admin) {
 }
