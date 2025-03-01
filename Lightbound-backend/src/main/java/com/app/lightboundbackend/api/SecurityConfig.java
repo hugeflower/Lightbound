@@ -43,7 +43,6 @@ public class SecurityConfig{
                 .requestMatchers("/auth/login").permitAll()
                 .requestMatchers("/auth/logout").permitAll()
                 .anyRequest().authenticated())
-                .httpBasic(httpBasic -> {})
             .logout(logout -> logout
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID", "jwt")
