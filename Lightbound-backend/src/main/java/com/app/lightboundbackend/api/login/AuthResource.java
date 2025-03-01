@@ -94,7 +94,7 @@ public class AuthResource {
         Cookie jwtCookie = new Cookie("jwt", token);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setPath("/");
-        //jwtCookie.setDomain(allowedDomain);
+        jwtCookie.setDomain(allowedDomain);
         jwtCookie.setMaxAge((int) (expirationTime/1000));
         return jwtCookie;
     }
