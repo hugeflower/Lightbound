@@ -30,7 +30,7 @@ function useRegisterUser() {
             setLoading(false)
         }
     }
-    return {success, loading, error, postRegisterUser}
+    return {success, loading, error, setError, postRegisterUser}
 }
 
 export { useRegisterUser };

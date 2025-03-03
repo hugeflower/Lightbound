@@ -4,14 +4,18 @@ import {useLoginUser} from "../hooks/UseLoginUser.ts";
 import {useState} from "react";
 
 function Login() {
-    const {error, success, postLoginUser} = useLoginUser()
+    const {error, success, setError, postLoginUser} = useLoginUser()
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const navigate = useNavigate();
 
     const handleLoginUser = (e: React.FormEvent) => {
         e.preventDefault();
-        postLoginUser(username, password)
+        if (username.length > 0 && password.length > 0) {
+            setUsername('');
+            setPassword('');
+            postLoginUser(username, password)
+        } else setError('Veuillez remplir le username et le password');
     }
 
     return (
@@ -61,7 +65,7 @@ function Login() {
                         {success &&
                             <div className="text-green-600">
                                 <p>{success}</p>
-                                <button onClick={() =>navigate(routes.home.path)}>
+                                <button className="" onClick={() =>navigate(routes.home.path)}>
                                     Go to Home
                                 </button>
                             </div>

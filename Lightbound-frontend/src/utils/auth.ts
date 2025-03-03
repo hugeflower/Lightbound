@@ -23,7 +23,6 @@ export const hasRole = (role: string): boolean => {
     try {
         const payload = JSON.parse(atob(token.split('.')[1])); // Décoder le payload
         const roles = payload.roles as string[]; // Extraire les rôles
-        console.log(roles);
         return roles.includes(role); // Vérifier si le rôle est présent
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {

@@ -4,7 +4,7 @@ import {useNavigate} from "react-router";
 import {routes} from "../router/routes.ts";
 
 function Signup() {
-    const {error, success, postRegisterUser} = useRegisterUser();
+    const {error, success, setError, postRegisterUser} = useRegisterUser();
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [admin, setAdmin] = useState<boolean>(false);
@@ -12,8 +12,14 @@ function Signup() {
 
     const handleRegisterUser = (e: React.FormEvent) => {
         e.preventDefault();
-        postRegisterUser(username, password, admin);
-
+        if (!username || !password) {
+            setError('Veuillez remplir le username et le password');
+        } else {
+            setAdmin(false);
+            setUsername('');
+            setPassword('');
+            postRegisterUser(username, password, admin);
+        }
     }
 
     return (
@@ -53,7 +59,7 @@ function Signup() {
                                    onChange={(e) => setAdmin(e.target.checked)}
                             />
                         </div>
-                        <div>
+                        <div className="text-blue-600">
                             <button type="submit">
                                 Create
                             </button>

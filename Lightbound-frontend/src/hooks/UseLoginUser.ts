@@ -34,7 +34,7 @@ function useLoginUser() {
             setLoading(false)
         }
     }
-    return {success, loading, error, postLoginUser}
+    return {success, loading, error, setError, postLoginUser}
 }
 
 export { useLoginUser };
