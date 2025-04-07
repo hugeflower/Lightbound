@@ -35,7 +35,6 @@ public class SecurityConfig{
     }
 
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenFilter jwtTokenFilter) throws Exception {
         http
             .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
@@ -53,7 +52,6 @@ public class SecurityConfig{
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/**").access((authentication, context) -> {
                     String path = context.getRequest().getRequestURI();
-                    System.out.println(path);
                     if (path.contains("../")
                     || path.contains("..\\")
                     || path.contains("..%2f")

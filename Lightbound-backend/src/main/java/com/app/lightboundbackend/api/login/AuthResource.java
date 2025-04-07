@@ -9,6 +9,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
@@ -35,6 +37,7 @@ public class AuthResource {
     private LoginAttemptService loginAttemptService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    private static final Logger logger = LoggerFactory.getLogger(AuthResource.class);
 
     private final long expirationTime = 15 * 60 * 1000; // 1 minute
     private final String secretKey;
@@ -52,7 +55,7 @@ public class AuthResource {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Erreur à la création. " + e.getMessage());
         }
-
+        logger.info("Un utilisateur s'est enregistré");
         return ResponseEntity.ok("User registered successfully!");
     }
 
@@ -60,6 +63,7 @@ public class AuthResource {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         try {
             if (loginAttemptService.isLocked(loginRequest.getUsername())) {
+                logger.warn("L'utilisateur" + loginRequest.getUsername() + "bloqué a essayé de se connecter");
                 return ResponseEntity.status(429).body("Trop d'essais ratés! Le compte est bloqué");
             }
             Authentication authentication = authenticationManager.authenticate(
@@ -70,10 +74,12 @@ public class AuthResource {
             );
             String token = createJWT(authentication);
             ResponseCookie jwtCookie = createCookie(token);
+            logger.info("Un utilisateur s'est connecté");
             return ResponseEntity.ok()
                 .header("Set-Cookie", jwtCookie.toString()).body(token);
         } catch (Exception e) {
             loginAttemptService.loginFailed(loginRequest.getUsername());
+            logger.warn("Login échoué!");
             return ResponseEntity.status(500).body("Erreur de login. " + e.getMessage());
         }
     }
