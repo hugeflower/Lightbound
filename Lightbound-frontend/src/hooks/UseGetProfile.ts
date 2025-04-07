@@ -1,8 +1,10 @@
 import {useState} from "react";
 import {host, secret, user} from "../api/endpoints.ts";
+import {SecretResponse} from "../Schema/SecretResponse.ts";
 
 function useGetProfile() {
-    const [success, setSuccess] = useState("");
+    const [message, setMessage] = useState("");
+    const [username, setUsername] = useState("");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState("");
 
@@ -10,7 +12,7 @@ function useGetProfile() {
     const getProfile = async () => {
         setLoading(true);
         setError("");
-        setSuccess("");
+        setMessage("");
         try {
             const response = await fetch(`${host}/${secret}/${user}`, {
                 method: 'GET',
@@ -19,12 +21,13 @@ function useGetProfile() {
                     "Content-Type": "application/json",
                 }
             })
-            const result = await response.text()
+            const result:SecretResponse = await response.json();
             if (!response.ok) {
-                throw new Error(result)
+                throw new Error()
             }
 
-            setSuccess(result);
+            setMessage(result.secretMessage);
+            setUsername(result.username);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Information non accessible";
             setError(errorMessage)
@@ -32,7 +35,7 @@ function useGetProfile() {
             setLoading(false)
         }
     }
-    return {success, loading, error, getProfile}
+    return {message, username, loading, error, getProfile}
 }
 
 export { useGetProfile };

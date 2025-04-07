@@ -13,6 +13,7 @@ export const isTokenExpired = (token: string): boolean => {
 
 export const isAuthenticated = (): boolean => {
     const token = localStorage.getItem('jwt');
+    console.log(token);
     return !!token && !isTokenExpired(token); // Vérifier la présence et la validité du token
 };
 
@@ -28,6 +29,6 @@ export const hasRole = (role: string): boolean => {
     } catch (error) {
         console.error("Erreur d'authentification");
         // l'utilisateur ne saura pas s'il y a un problème avec son token
-        return true;
+        return false;
     }
 };

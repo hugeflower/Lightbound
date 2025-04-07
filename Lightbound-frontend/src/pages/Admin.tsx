@@ -6,7 +6,7 @@ import {useLogoutUser} from "../hooks/UseLogoutUser.ts";
 
 
 function Admin() {
-    const {error, success, getAdmin} = useGetAdmin()
+    const {error, message, username, getAdmin} = useGetAdmin()
     const {error: errorLogout, success: successLogout, postLogoutUser} = useLogoutUser()
     const navigate = useNavigate()
 
@@ -25,7 +25,7 @@ function Admin() {
         <section className="bg-gray-50 dark:bg-gray-900">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <h1 className="text-2xl leading-tight text-gray-900">
-                    Ceci est la page réservée aux ADMINS (TRÈS SECRET)!
+                    {"Ceci est la page réservée à l'ADMIN " + username + " (TRÈS SECRET)!"}
                 </h1>
 
             </div>
@@ -39,9 +39,9 @@ function Admin() {
                     <p>{errorLogout}</p>
                 </div>
             }
-            {success &&
+            {message &&
                 <div className="text-green-600">
-                    <p>{success}</p>
+                    <p>{message}</p>
                     <button onClick={() =>navigate(routes.home.path)}>
                         Go to Home
                     </button>

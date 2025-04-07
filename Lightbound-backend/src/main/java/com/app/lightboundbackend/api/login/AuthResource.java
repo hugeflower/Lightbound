@@ -1,6 +1,7 @@
 package com.app.lightboundbackend.api.login;
 
 import com.app.lightboundbackend.api.RegistrationRequest;
+import com.app.lightboundbackend.application.LoginAttemptService;
 import com.app.lightboundbackend.application.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,6 +31,8 @@ public class AuthResource {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private LoginAttemptService loginAttemptService;
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -57,6 +59,9 @@ public class AuthResource {
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         try {
+            if (loginAttemptService.isLocked(loginRequest.getUsername())) {
+                return ResponseEntity.status(429).body("Trop d'essais ratés! Le compte est bloqué");
+            }
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginRequest.getUsername(),
@@ -65,8 +70,10 @@ public class AuthResource {
             );
             String token = createJWT(authentication);
             ResponseCookie jwtCookie = createCookie(token);
-            return ResponseEntity.ok().header("Set-Cookie", jwtCookie.toString()).body(token);
+            return ResponseEntity.ok()
+                .header("Set-Cookie", jwtCookie.toString()).body(token);
         } catch (Exception e) {
+            loginAttemptService.loginFailed(loginRequest.getUsername());
             return ResponseEntity.status(500).body("Erreur de login. " + e.getMessage());
         }
     }

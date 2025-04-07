@@ -6,7 +6,7 @@ import {useLogoutUser} from "../hooks/UseLogoutUser.ts";
 
 
 function Profile() {
-    const {error, success, getProfile} = useGetProfile()
+    const {error, message, username, getProfile} = useGetProfile()
     const {error: errorLogout, success: successLogout, postLogoutUser} = useLogoutUser()
     const navigate = useNavigate()
 
@@ -21,7 +21,7 @@ function Profile() {
         <section className="bg-gray-50 dark:bg-gray-900">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <h1 className="text-2xl leading-tight text-gray-900">
-                    Ceci est la page réservée aux utilisateurs!
+                    {"Ceci est la page réservée à " + username + " !"}
                 </h1>
 
             </div>
@@ -35,9 +35,9 @@ function Profile() {
                     <p>{errorLogout}</p>
                 </div>
             }
-            {success &&
+            {message &&
                 <div className="text-green-600">
-                    <p>{success}</p>
+                    <p>{message}</p>
                     <button onClick={() =>navigate(routes.home.path)}>
                         Go to Home
                     </button>
